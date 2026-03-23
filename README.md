@@ -1,17 +1,31 @@
-# FRAUD SHIELD - AI-Powered Real-Time Fraud Detection System
+# Fraud Shield
 
-A fully functional MVP prototype for detecting fraudulent transactions in real-time using machine learning ensemble methods.
+AI-powered real-time fraud detection system.
 
-## Features
+## Overview
 
-- **Real-Time Analysis**: Analyzes transactions in <200ms
-- **Multi-Model Detection**: Combines Isolation Forest, XGBoost, and Rule Engine
-- **Ensemble Risk Scoring**: Dynamic risk scores (0-100)
-- **Explainable AI**: SHAP-based explanations for flagged transactions
-- **Adaptive Learning**: Feedback loop for continuous improvement
-- **Smart Decisions**: Allow / Step-up Authentication / Block
+A production-ready MVP that analyzes financial transactions in real-time and assigns risk scores using an ensemble of machine learning models.
 
-## Quick Start
+### Tech Stack
+- **Backend**: FastAPI, Python, scikit-learn, XGBoost, SHAP
+- **Frontend**: React
+- **ML Models**: Isolation Forest, XGBoost, Rule Engine
+
+### Architecture
+
+```
+Transaction → Feature Engine → [Isolation Forest + XGBoost + Rules] → Ensemble Score → Decision
+```
+
+### Risk Levels
+
+| Score | Level | Action |
+|-------|-------|--------|
+| 0-30 | LOW | Allow |
+| 30-60 | MEDIUM | Step-up Authentication |
+| 60-100 | HIGH | Block |
+
+## Local Development
 
 ### Prerequisites
 - Python 3.10+
@@ -20,40 +34,34 @@ A fully functional MVP prototype for detecting fraudulent transactions in real-t
 ### Run Backend
 
 ```bash
-cd fraud-detection-mvp/backend
+cd backend
 pip install -r requirements.txt
 python run.py
 ```
 
-Backend runs at: http://localhost:8000
+API runs at http://localhost:8000
 
 ### Run Frontend
 
 ```bash
-cd fraud-detection-mvp/frontend
+cd frontend
 npm install
 npm start
 ```
 
-Frontend runs at: http://localhost:3000
+Dashboard runs at http://localhost:3000
 
 ## API Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | API info |
-| `/health` | GET | Health check |
-| `/api/v1/analyze` | POST | Analyze single transaction |
-| `/api/v1/simulate` | POST | Simulate transactions |
-| `/api/v1/feedback` | POST | Submit fraud feedback |
-| `/api/v1/statistics` | GET | System statistics |
-| `/api/v1/history` | GET | Transaction history |
-| `/api/v1/rules` | GET | View detection rules |
-| `/api/v1/feature-importance` | GET | Model feature importance |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| POST | `/api/v1/analyze` | Analyze single transaction |
+| POST | `/api/v1/simulate` | Simulate transactions |
+| GET | `/api/v1/statistics` | System statistics |
+| POST | `/api/v1/feedback` | Submit fraud feedback |
 
-## Example API Calls
-
-### Analyze a Transaction
+### Example Request
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/analyze \
@@ -72,34 +80,29 @@ curl -X POST http://localhost:8000/api/v1/analyze \
   }'
 ```
 
-### Simulate Transactions
+## Deployment
 
-```bash
-curl -X POST "http://localhost:8000/api/v1/simulate?n_transactions=20"
-```
+### Deploy Backend to Render
 
-## Tech Stack
+1. Go to https://dashboard.render.com
+2. Click **New** → **Web Service**
+3. Connect GitHub and select this repository
+4. Configure:
+   - **Root Directory**: `backend`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `python -m uvicorn app.api.main:app --host 0.0.0.0 --port $PORT`
+   - **Plan**: Free
+5. Click **Create Web Service**
 
-- **Backend**: FastAPI, Python, scikit-learn, XGBoost, SHAP
-- **Frontend**: React, Neo-Brutalism UI
-- **Models**: Isolation Forest, XGBoost, Rule Engine
+### Deploy Frontend to Vercel
 
-## Model Architecture
-
-```
-Transaction → Feature Engine → [IF + XGB + Rules] → Ensemble Score → Decision
-                                    ↓
-                              SHAP Explanations
-```
-
-## Risk Levels
-
-| Score | Level | Decision |
-|-------|-------|----------|
-| 0-30 | LOW | ALLOW |
-| 30-60 | MEDIUM | STEP_UP_AUTH |
-| 60-100 | HIGH | BLOCK |
+1. Go to https://vercel.com/new
+2. Import this GitHub repository
+3. Configure:
+   - **Root Directory**: `frontend`
+   - **Environment Variable**: `REACT_APP_API_URL` = your Render backend URL
+4. Click **Deploy**
 
 ## License
 
-MIT License
+MIT
